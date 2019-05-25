@@ -48,9 +48,26 @@ export class LinkedList<T> {
 
 	public forEach(fn: (node: LinkedNode<T>) => void): void  {
 		let current = this.first;
-		while (!_.isNil(current)) {
+		while (!_.isNil(current) && current !== this._tail) {
 			fn(current);
 			current = current.next;
 		}
+	}
+
+	public map<U>(fn: (node: LinkedNode<T>, i: number) => U): LinkedList<U>  {
+		const newList = new LinkedList<U>();
+		let index = 0;
+		this.forEach((node) => {
+			newList.push(fn(node, index++));
+		});
+		return newList;
+	}
+
+	public toArray(): T[] {
+		const newList = [];
+		this.forEach((node) => {
+			newList.push(node.val);
+		});
+		return newList;
 	}
 }
