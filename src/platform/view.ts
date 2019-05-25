@@ -3,11 +3,11 @@ export default abstract class View {
 	private _element: Element;
 	private _children: View[] = [];
 
-	constructor(parent: View = null) {
+	public constructor(parent: View = null) {
 		this._element = this.initView(parent);
 	}
 
-	abstract initView(parent: View): Element;
+	protected abstract initView(parent: View): Element;
 
 	public get element(): Element {
 		if (!this._element) {

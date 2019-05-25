@@ -3,7 +3,7 @@ import View from './view';
 export default abstract class Controller<V extends View> {
 	private _view: V;
 
-	constructor(view?: V) {
+	public constructor(view?: V) {
 		this._view = view;
 	}
 
