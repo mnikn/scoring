@@ -1,6 +1,6 @@
 import View from './view';
 
-export default abstract class Controller<V extends View> {
+export default abstract class Controller<Model, V extends View<Model>> {
 	private _view: V;
 
 	public constructor(view?: V) {

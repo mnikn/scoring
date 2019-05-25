@@ -1,13 +1,32 @@
-export default abstract class View {
-	private _parent: View;
-	private _element: Element;
-	private _children: View[] = [];
+import * as d3 from 'd3';
+import * as _ from 'lodash';
 
-	public constructor(parent: View = null) {
-		this._element = this.initView(parent);
+export default abstract class View<Model> {
+	private _parent: View<Model>;
+	private _element: Element;
+	private _children: View<Model>[] = [];
+
+	public constructor(parent: View<Model> | Element = null, nativeElement?: Element) {
+		if (parent instanceof Element) {
+			parent = new SimpleView(null, parent);
+		}
+		this._parent = parent;
+		if (!_.isNil(nativeElement)) {
+			this._element = nativeElement;
+		} else {
+			this._element = this.render(this.getInitialModel());
+		}
 	}
 
-	protected abstract initView(parent: View): Element;
+	protected getInitialModel(): Model {
+		return null;
+	}
+
+	public abstract render(model?: Model): Element;
+
+	public get parent(): View<Model> {
+		return this._parent;
+	}
 
 	public get element(): Element {
 		if (!this._element) {
@@ -20,16 +39,26 @@ export default abstract class View {
 		return $(this.element);
 	}
 
-	public get children(): View[] {
+	public get sElement(): d3.Selection<Element, any, any, any> {
+		return d3.select(this.element);
+	}
+
+	public get children(): View<Model>[] {
 		return this._children;
 	}
 
-	public appendChild(child: View) {
-		$(this._element).append(child.element);
+	public appendChild(child: View<Model>) {
+		this.$element.append(child.element);
 		this._children.push(child);
 	}
 
 	public destory(): void {
-		$(this._element).remove('*');
+		this.$element.remove('*');
+	}
+}
+
+export class SimpleView extends View<any> {
+	public render(model?: any): Element {
+		return null;
 	}
 }
