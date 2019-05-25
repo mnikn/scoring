@@ -1,5 +1,5 @@
-import EditorView from "./views/editor";
-import EditorController from "./controllers/editor";
+import EditorView from './views/editor';
+import EditorController from './controllers/editor';
 
 export default function Scoring(parentSelector, configs) {
 	const view = new EditorView();
