@@ -4,9 +4,13 @@ export default abstract class Controller<Model, V extends View<Model>> {
 	private _view: V;
 
 	public constructor() {
+		this.beforeViewInit();
 		this._view = this.initView();
 	}
 
+	protected beforeViewInit(): void {
+
+	}
 	protected abstract initView(): V;
 
 	public get view(): V {
