@@ -70,4 +70,8 @@ export class LinkedList<T> {
 		});
 		return newList;
 	}
+
+	public get length(): number {
+		return this.toArray().length;
+	}
 }

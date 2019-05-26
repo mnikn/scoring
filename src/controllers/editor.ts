@@ -9,6 +9,16 @@ export default class EditorController extends Controller<Score, EditorView> {
 
 	protected beforeViewInit(): void {
 		this._service = new EditorService(new Score());
+		$(document).on('keydown', (event) => {
+			const key = event.key;
+			const noteReg = /([0-7]|\s|-)/;
+			if (!key.match(noteReg)) {
+				return;
+			}
+
+			this._service.insertNote(key);
+			this.view.render(this._service.model);
+		});
 	}
 
 	protected initView(): EditorView {

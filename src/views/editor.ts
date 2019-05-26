@@ -48,10 +48,14 @@ export default class EditorView extends View<Score> {
 
 		// render content
 		const sections = model.sections.toArray();
-		const xStep = element.node().clientWidth / 5 - 10;
+		let xStep = 0;
+		if (this.parent) {
+			xStep = this.parent.element.clientWidth / 5 - 10;
+		}
 		const seciontElement = element
 			.selectAll('.score-section')
 			.data(sections.map((section, column) => {
+				const xStep = this.parent.element.clientWidth / 5 - 10;
 				const x = (column % 5) * xStep;
 				const y = Math.floor(column / 5) * 100 + 200;
 				return { id: section.id, pos: { x, y } };

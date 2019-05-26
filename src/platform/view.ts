@@ -10,14 +10,17 @@ export default abstract class View<Model> {
 		if (!_.isNil(nativeElement)) {
 			this._element = nativeElement;
 		}
-		// else {
-		// 	this._element = this.doRender(initialModel);
-		// }
 	}
 
 	public render(model?: Model): void {
+		if (!_.isNil(this._element)) {
+			this.$element.remove('*');
+		}
 		this._element = this.doRender(model); 
 		this.afterRender(model);
+		if (!_.isNil(this.parent)) {
+			this.parent.element.appendChild(this.element);
+		}
 	}
 
 	protected abstract doRender(model?: Model): Element;
