@@ -3,9 +3,11 @@ import View from './view';
 export default abstract class Controller<Model, V extends View<Model>> {
 	private _view: V;
 
-	public constructor(view?: V) {
-		this._view = view;
+	public constructor() {
+		this._view = this.initView();
 	}
+
+	protected abstract initView(): V;
 
 	public get view(): V {
 		if (!this._view) {
@@ -23,4 +25,5 @@ export default abstract class Controller<Model, V extends View<Model>> {
 			this.view.destory();
 		}
 	}
+
 }

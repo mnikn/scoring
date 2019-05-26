@@ -2,30 +2,38 @@ import * as d3 from 'd3';
 import * as _ from 'lodash';
 
 export default abstract class View<Model> {
-	private _parent: View<Model>;
+	private _parent: View<any>;
 	private _element: Element;
 	private _children: View<Model>[] = [];
 
-	public constructor(parent: View<Model> | Element = null, nativeElement?: Element) {
-		if (parent instanceof Element) {
-			parent = new SimpleView(null, parent);
-		}
-		this._parent = parent;
+	public constructor(nativeElement?: Element) {
 		if (!_.isNil(nativeElement)) {
 			this._element = nativeElement;
-		} else {
-			this._element = this.render(this.getInitialModel());
 		}
+		// else {
+		// 	this._element = this.doRender(initialModel);
+		// }
 	}
 
-	protected getInitialModel(): Model {
-		return null;
+	public render(model?: Model): void {
+		this._element = this.doRender(model); 
+		this.afterRender(model);
 	}
 
-	public abstract render(model?: Model): Element;
+	protected abstract doRender(model?: Model): Element;
+	protected afterRender(model?: Model): void {
+	}
 
-	public get parent(): View<Model> {
+	public get parent(): View<any> {
 		return this._parent;
+	}
+
+	public set parent(parent: View<any>) {
+		this._parent = parent;
+		if (!_.isNil(parent)) {
+			parent.$element.append(this.element);
+			parent.children.push(this);
+		}
 	}
 
 	public get element(): Element {
@@ -48,8 +56,7 @@ export default abstract class View<Model> {
 	}
 
 	public appendChild(child: View<Model>) {
-		this.$element.append(child.element);
-		this._children.push(child);
+		child.parent = this;
 	}
 
 	public destory(): void {
@@ -58,7 +65,7 @@ export default abstract class View<Model> {
 }
 
 export class SimpleView extends View<any> {
-	public render(model?: any): Element {
+	protected doRender(model?: any): Element {
 		return null;
 	}
 }

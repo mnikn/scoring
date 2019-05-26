@@ -2,17 +2,20 @@ import * as d3 from 'd3';
 
 import View from 'src/platform/view';
 import Score from 'src/models/score';
+import CursorView from './cursor';
 
 export default class EditorView extends View<Score> {
 	private static FONT_COLOR = 'black';
 
-	protected getInitialModel(): Score {
-		return new Score();
+	private _cusror: CursorView;
+
+	public constructor(nativeElement?: Element) {
+		super(nativeElement);
+		this._cusror = new CursorView();
 	}
 
-	public render(model: Score): Element {
-		const element = d3.select(this.parent.element)
-			.append('svg')
+	protected doRender(model: Score): Element {
+		const element = d3.create('svg')
 			.attr('id', 'score-content')
 			.style('height', '800px')
 			.style('width', '100%')
@@ -67,7 +70,6 @@ export default class EditorView extends View<Score> {
 		const noteElements = seciontElement
 			.selectAll('score-note')
 			.data((section) => {
-				console.log(section);
 				return section.notes.toArray();
 			})
 			.enter().append('svg')
@@ -91,6 +93,11 @@ export default class EditorView extends View<Score> {
 			.attr('fill', EditorView.FONT_COLOR);
 
 		return element.node();
+	}
+
+	protected afterRender(model?: Score): void {
+		this._cusror.render(model);
+		this._cusror.parent = this;
 	}
 
 }
