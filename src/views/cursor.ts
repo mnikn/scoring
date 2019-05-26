@@ -8,13 +8,16 @@ export default class CursorView extends View<Score> {
 	private static CURSOR_Y_OFFSET = 35;
 	
 	public doRender(model?: Score): Element {
-		const element = d3.create('path')
+		const element = d3.create('svg')
+			.attr('class', 'score-editor-cursor')
+			.attr('x', '20px');
+		element
+			.append('path')
 			.attr('d', 'M0 10 c0 3.3 2.7 6 6 6 s6-2.7 6-6 S6 0,6 0 S0 6.7 0 10z')
 			.attr('transform', `matrix(0.93 0 0 0.93 ${0} ${236})`)
 			.attr('fill', 'red')
 			.style('cursor', 'pointer')
-			.node();
-		return element;
+		return element.node();
 	}
 
 	// public moveTo(note: Note): void {
