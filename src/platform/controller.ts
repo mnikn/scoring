@@ -3,15 +3,15 @@ import View from './view';
 export default abstract class Controller<Model, V extends View<Model>> {
 	private _view: V;
 
-	public constructor() {
+	public constructor(parentView?: View<any>) {
 		this.beforeViewInit();
-		this._view = this.initView();
+		this._view = this.initView(parentView);
 	}
 
 	protected beforeViewInit(): void {
 
 	}
-	protected abstract initView(): V;
+	protected abstract initView(parentView?: View<any>): V;
 
 	public get view(): V {
 		if (!this._view) {

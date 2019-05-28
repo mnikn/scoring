@@ -2,6 +2,7 @@ import Controller from 'src/platform/controller';
 import EditorView from 'src/views/editor';
 import Score from 'src/models/score';
 import EditorService from '../services/editor';
+import View from '../platform/view';
 
 export default class EditorController extends Controller<Score, EditorView> {
 
@@ -21,9 +22,10 @@ export default class EditorController extends Controller<Score, EditorView> {
 		});
 	}
 
-	protected initView(): EditorView {
+	protected initView(parentView: View<any>): EditorView {
 		const view = new EditorView();
 		view.render(this._service.model);
+		view.parent = parentView;
 		return view;
 	}
 
