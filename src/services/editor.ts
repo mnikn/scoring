@@ -7,8 +7,7 @@ export default class EditorService extends Service<Score> {
 
 	public insertNote(key: string): void {
 		const sections = this.model.sections;
-		// todo
-		if (sections.length === 0) {
+		if (this.model.isLastSectionFull()) {
 			const newSection = new Section();
 			newSection.id = sections.length + 1;
 			const newNote = new Note();
@@ -16,6 +15,12 @@ export default class EditorService extends Service<Score> {
 			newNote.key = key;
 			newSection.notes.push(newNote);
 			sections.push(newSection);
-		};
+		} else {
+			const lastSection = this.model.sections.last.val;
+			const newNote = new Note();
+			newNote.id = lastSection.notes.length + 1;
+			newNote.key = key;
+			lastSection.notes.push(newNote);			
+		}
 	}
 }

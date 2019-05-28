@@ -6,10 +6,11 @@ export default abstract class View<Model> {
 	private _element: Element;
 	private _children: View<Model>[] = [];
 
-	public constructor(nativeElement?: Element) {
+	public constructor(nativeElement?: Element, parentView?: View<any>) {
 		if (!_.isNil(nativeElement)) {
 			this._element = nativeElement;
 		}
+		this._parent = parentView;
 	}
 
 	public render(model?: Model): void {

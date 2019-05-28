@@ -24,16 +24,22 @@ export class LinkedList<T> {
 	}
 
 	public get first(): LinkedNode<T> {
+		if (this._head.next === this._tail) return null;
 		return this._head.next;
 	}
 
 	public get last(): LinkedNode<T> {
+		if (this._tail.prev === this._head) return null;
 		return this._tail.prev;
 	}
 
 	public push(val: T): void {
 		const newElem = new LinkedNode<T>(val, this._tail, this.last);
-		this.last.next = newElem;
+		if (_.isNil(this.last)) {
+			this._head.next = newElem;
+		} else {
+			this.last.next = newElem;
+		}
 		this._tail.prev = newElem;
 	}
 

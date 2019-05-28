@@ -24,7 +24,7 @@ export default class CursorView extends View<Score> {
 	// 	if (!note) return;
 
 	// 	const sectionElement = document.querySelector(`#score-section-${note.sectionId}`);
-	// 	const noteElement = d3.select(this.parentElement).select(`#score-note-${note.id}`).node() as Element;
+	// 	const noteElement = this.parent.sElement.select(`#score-note-${note.id}`).node() as Element;
 	// 	const seciontX = parseFloat(sectionElement.getAttribute('x'));
 	// 	const sectionY = parseFloat(sectionElement.getAttribute('y'));
 	// 	const seciontWidth = parseFloat(sectionElement.getAttribute('width'));

@@ -23,9 +23,8 @@ export default class EditorController extends Controller<Score, EditorView> {
 	}
 
 	protected initView(parentView: View<any>): EditorView {
-		const view = new EditorView();
+		const view = new EditorView(null, parentView);
 		view.render(this._service.model);
-		view.parent = parentView;
 		return view;
 	}
 

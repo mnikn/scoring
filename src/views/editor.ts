@@ -9,8 +9,8 @@ export default class EditorView extends View<Score> {
 
 	private _cusror: CursorView;
 
-	public constructor(nativeElement?: Element) {
-		super(nativeElement);
+	public constructor(nativeElement?: Element, parentView?: View<any>) {
+		super(nativeElement, parentView);
 		this._cusror = new CursorView();
 	}
 
@@ -48,20 +48,16 @@ export default class EditorView extends View<Score> {
 
 		// render content
 		const sections = model.sections.toArray();
-		let xStep = 0;
-		if (this.parent) {
-			xStep = this.parent.element.clientWidth / 5 - 10;
-		}
+		const xStep = this.parent.element.clientWidth / 5 - 10;
 		const seciontElement = element
 			.selectAll('.score-section')
 			.data(sections.map((section, column) => {
-				const xStep = this.parent.element.clientWidth / 5 - 10;
-				const x = (column % 5) * xStep;
+				const x = (column % 5) * xStep + 10;
 				const y = Math.floor(column / 5) * 100 + 200;
 				return { id: section.id, pos: { x, y } };
 			}))
 			.enter().append('svg')
-			.attr('id', (data, i) => `score-section-${i}`)
+			.attr('id', (data) => `score-section-${data.id}`)
 			.attr('class', 'score-section')
 			.attr('x', data => data.pos.x)
 			.attr('y', data => data.pos.y)
@@ -77,17 +73,35 @@ export default class EditorView extends View<Score> {
 				return section.notes.toArray();
 			})
 			.enter().append('svg')
-			.attr('id', (note, i) => `score-note-${i}`)
+			.attr('id', (note) => `score-note-${note.id}`)
 			.attr('data-id', note => note.id)
 			.attr('class', 'score-note')
 			.style('cursor', 'pointer')
-			// .on('click', function (note) {
-			// 	self.noteEvents.notify(EditorView.ACTION_CLICK_NOTE, note);
-			// })
-			// .on('contextmenu', function (data) {
-			// 	self.noteEvents.notify(EditorView.ACTION_SHOW_MENU, data, { x: d3.event.x, y: d3.event.y });
-			// 	return false;
-			// });
+			.attr('x', (data, i) => {
+				// let section = this.editor.score.sections.find(s => s.id === data.sectionId);
+				// let offset = 100 / (perNote / section.notes.length);
+				return `${i * 25 + 5}%`;
+			})
+			.attr('y', '0');
+		// .on('click', function (note) {
+		// 	self.noteEvents.notify(EditorView.ACTION_CLICK_NOTE, note);
+		// })
+		// .on('contextmenu', function (data) {
+		// 	self.noteEvents.notify(EditorView.ACTION_SHOW_MENU, data, { x: d3.event.x, y: d3.event.y });
+		// 	return false;
+		// });
+
+
+		// render bar line
+		seciontElement
+			.append('text')
+			.text('|')
+			.attr('class', 'section-bar-line')
+			.attr('x', '99%')
+			.attr('y', '70%')
+			.style('font-size', '16px')
+			.attr('fill', EditorView.FONT_COLOR);
+
 
 		noteElements
 			.append('text')
