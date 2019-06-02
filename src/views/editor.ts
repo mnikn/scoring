@@ -4,28 +4,33 @@ import View from 'src/platform/view';
 import Score from 'src/models/score';
 import CursorView from './cursor';
 import Note from 'src/models/note';
+import Coordinate from './services/coordinate';
 
 export default class EditorView extends View<Score> {
 	private static FONT_COLOR = 'black';
 
 	private _cusror: CursorView;
+	private _coordinate: Coordinate;
 
 	public constructor(nativeElement?: Element, parentView?: View<any>) {
 		super(nativeElement, parentView);
 		this._cusror = new CursorView();
 	}
 
+	public get coordinate(): Coordinate {
+		return this._coordinate;
+	}
+
 	public cursorMoveTo(note: Note): void {
 		this._cusror.moveTo(note);
 	}
-	
+
 	protected doRender(model: Score): Element {
 		const element = d3.create('svg')
 			.attr('id', 'score-content')
 			.style('height', '800px')
 			.style('width', '100%')
 			.style('background', 'white');
-
 
 		element
 			.append('text')
@@ -52,28 +57,20 @@ export default class EditorView extends View<Score> {
 			.attr('y', '100px')
 			.attr('fill', EditorView.FONT_COLOR);
 
-		const SECTION_PER_LINE = 5;
-		const SECTION_GAP_Y = 100;
-		const BASE_X = 10;
-		const BASE_Y = 200;
-
 		// render content
 		const sections = model.sections.toArray();
-		const xStep = this.parent.element.clientWidth / SECTION_PER_LINE - BASE_X;
+		if (sections.length === 0) return element.node();
+
 		const seciontElement = element
 			.selectAll('.score-section')
-			.data(sections.map((section, column) => {
-				const x = (column % SECTION_PER_LINE) * xStep + BASE_X;
-				const y = Math.floor(column / SECTION_PER_LINE) * SECTION_GAP_Y + BASE_Y;
-				return { id: section.id, pos: { x, y } };
-			}))
+			.data(this._coordinate.getSectionsPos())
 			.enter().append('svg')
 			.attr('id', (data) => `score-section-${data.id}`)
 			.attr('class', 'score-section')
 			.attr('x', data => data.pos.x)
 			.attr('y', data => data.pos.y)
-			.attr('width', xStep)
-			.attr('height', '32')
+			.attr('width', this._coordinate.sectionWidth)
+			.attr('height', this._coordinate.sectionHeight)
 			.data(sections);
 
 
@@ -125,6 +122,8 @@ export default class EditorView extends View<Score> {
 	}
 
 	protected afterRender(model?: Score): void {
+		this._coordinate = new Coordinate(this);
+
 		this._cusror.render(model);
 		this._cusror.parent = this;
 	}

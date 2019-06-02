@@ -5,6 +5,7 @@ export default abstract class View<Model> {
 	private _parent: View<any>;
 	private _element: Element;
 	private _children: View<Model>[] = [];
+	private _model: Model;
 
 	public constructor(nativeElement?: Element, parentView?: View<any>) {
 		if (!_.isNil(nativeElement)) {
@@ -13,12 +14,17 @@ export default abstract class View<Model> {
 		this._parent = parentView;
 	}
 
+	public get model(): Model {
+		return this._model;
+	}
+
 	public render(model?: Model): void {
 		if (!_.isNil(this._element)) {
 			this.$element.remove('*');
 		}
 		this._element = this.doRender(model); 
 		this.afterRender(model);
+		this._model = model;
 		if (!_.isNil(this.parent)) {
 			this.parent.element.appendChild(this.element);
 		}
