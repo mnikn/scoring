@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import View from 'src/platform/view';
 import Score from 'src/models/score';
 import CursorView from './cursor';
+import Note from 'src/models/note';
 
 export default class EditorView extends View<Score> {
 	private static FONT_COLOR = 'black';
@@ -14,12 +15,17 @@ export default class EditorView extends View<Score> {
 		this._cusror = new CursorView();
 	}
 
+	public cursorMoveTo(note: Note): void {
+		this._cusror.moveTo(note);
+	}
+	
 	protected doRender(model: Score): Element {
 		const element = d3.create('svg')
 			.attr('id', 'score-content')
 			.style('height', '800px')
 			.style('width', '100%')
 			.style('background', 'white');
+
 
 		element
 			.append('text')
@@ -46,14 +52,19 @@ export default class EditorView extends View<Score> {
 			.attr('y', '100px')
 			.attr('fill', EditorView.FONT_COLOR);
 
+		const SECTION_PER_LINE = 5;
+		const SECTION_GAP_Y = 100;
+		const BASE_X = 10;
+		const BASE_Y = 200;
+
 		// render content
 		const sections = model.sections.toArray();
-		const xStep = this.parent.element.clientWidth / 5 - 10;
+		const xStep = this.parent.element.clientWidth / SECTION_PER_LINE - BASE_X;
 		const seciontElement = element
 			.selectAll('.score-section')
 			.data(sections.map((section, column) => {
-				const x = (column % 5) * xStep + 10;
-				const y = Math.floor(column / 5) * 100 + 200;
+				const x = (column % SECTION_PER_LINE) * xStep + BASE_X;
+				const y = Math.floor(column / SECTION_PER_LINE) * SECTION_GAP_Y + BASE_Y;
 				return { id: section.id, pos: { x, y } };
 			}))
 			.enter().append('svg')
@@ -73,7 +84,7 @@ export default class EditorView extends View<Score> {
 				return section.notes.toArray();
 			})
 			.enter().append('svg')
-			.attr('id', (note) => `score-note-${note.id}`)
+			.attr('id', (note) => `score-note-${note.sectionId}-${note.id}`)
 			.attr('data-id', note => note.id)
 			.attr('class', 'score-note')
 			.style('cursor', 'pointer')

@@ -81,3 +81,8 @@ export class LinkedList<T> {
 		return this.toArray().length;
 	}
 }
+
+export interface Position {
+	x: number;
+	y: number;
+}

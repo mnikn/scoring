@@ -17,8 +17,9 @@ export default class EditorController extends Controller<Score, EditorView> {
 				return;
 			}
 
-			this._service.insertNote(key);
+			const newNote = this._service.insertNote(key);
 			this.view.render(this._service.model);
+			this.view.cursorMoveTo(newNote);
 		});
 	}
 
