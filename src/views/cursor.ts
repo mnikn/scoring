@@ -40,6 +40,12 @@ export default class CursorView extends View<Score> {
 		this.doMoveTo(pos);
 	}
 
+	public moveToNextInsertPos(): void {
+		const pos = this.coordinate.getNextInsertPos();
+		pos.y += CursorView.CURSOR_Y_OFFSET;
+		this.doMoveTo(pos);
+	}
+
 	private doMoveTo(pos: Position) {
 		if (!_.isNil(pos)) {
 			this.sElement.select('path').attr('transform', `matrix(0.93 0 0 0.93 ${pos.x} ${pos.y})`);

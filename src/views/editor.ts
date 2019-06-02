@@ -25,6 +25,10 @@ export default class EditorView extends View<Score> {
 		this._cusror.moveTo(note);
 	}
 
+	public cursorMoveToNextInsertPos(): void {
+		this._cusror.moveToNextInsertPos();
+	}
+
 	protected doRender(model: Score): Element {
 		const element = d3.create('svg')
 			.attr('id', 'score-content')

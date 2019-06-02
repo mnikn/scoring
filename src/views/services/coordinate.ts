@@ -31,10 +31,25 @@ export default class Coordinate {
 	}
 
 	public getNextInsertPos(): Position {
-		const i = this._editor.model.sections.length;
-		const x = (i % Coordinate.SECTION_PER_LINE) * this.sectionWidth + Coordinate.BASE_X;
-		const y = Math.floor(i / Coordinate.SECTION_PER_LINE) * Coordinate.SECTION_GAP_Y + Coordinate.BASE_Y;
-		return { x, y };
+		const score = this._editor.model;
+
+		let pos;
+		if (score.isLastSectionFull()) {
+			const i = score.sections.length;
+			const sectionX = (i % Coordinate.SECTION_PER_LINE) * this.sectionWidth + Coordinate.BASE_X + this.sectionWidth * 0.05;
+			const sectionY = Math.floor(i / Coordinate.SECTION_PER_LINE) * Coordinate.SECTION_GAP_Y + Coordinate.BASE_Y;
+			pos = { x: sectionX, y: sectionY };
+		} else {
+			const lastSection = score.sections.last.val;
+			const lastSectionElm = $(`#score-section-${lastSection.id}`);
+			const sectionX = Number.parseFloat(lastSectionElm.attr('x'));
+			const sectionY = Number.parseFloat(lastSectionElm.attr('y'));
+
+			const offsetX = this.sectionWidth * (lastSection.notes.length * 25 + 5) / 100;
+			const insertX = sectionX + offsetX;
+			pos = {x: insertX, y: sectionY};
+		}
+		return pos;
 	}
 
 	public getNotePos(note: Note): Position {
