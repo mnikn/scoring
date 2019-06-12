@@ -7,14 +7,39 @@ import Note from 'src/models/note';
 import { Position } from 'src/utils/data';
 import Coordinate from './services/coordinate';
 import EditorView from './editor';
+import { LinkedNode } from '../utils/data';
+import Section from 'src/models/section';
+
+const KEY_LEFT = 37;
+const KEY_UP = 38;
+const KEY_RIGHT = 39;
+const KEY_DOWN = 40;
 
 export default class CursorView extends View<Score> {
 	private static CURSOR_Y_OFFSET = 35;
+	private _currentNote: LinkedNode<Note>;
 
-	private _currentNote: Note;
+	public constructor(nativeElement?: Element, parentView?: View<any>) {
+		super(nativeElement, parentView);
+		window.addEventListener('keydown', (event) => {
+			switch (event.keyCode) {
+				case KEY_LEFT:
+					this.moveToPrevNote();
+					break;
+				case KEY_RIGHT:
+					this.moveToNextNote();
+					break;
+			}
+		});
+	}
 
-	public get currentNote(): Note {
+	public get currentNote(): LinkedNode<Note> {
 		return this._currentNote;
+	}
+
+	public get currentSection(): LinkedNode<Section> {
+		if (_.isNil(this._currentNote) || _.isNil(this._currentNote.val)) return null;
+		return this.model.sections.find(section => section.id === this.currentNote.val.sectionId);
 	}
 
 	private get coordinate(): Coordinate {
@@ -33,14 +58,38 @@ export default class CursorView extends View<Score> {
 	}
 
 	public moveTo(note: Note): void {
-		this._currentNote = note;
-
 		const pos = this.coordinate.getNotePos(note);
 		pos.y += CursorView.CURSOR_Y_OFFSET;
 		this.doMoveTo(pos);
 	}
 
+	public moveToNextNote(): void {
+		if (_.isNil(this._currentNote.next.val)) {
+			const nextSection = this.currentSection.next;
+			if (!_.isNil(nextSection.val)) {
+				this._currentNote = nextSection.val.notes.first;
+			}
+		} else {
+			this._currentNote = this._currentNote.next;
+		}
+		this.moveTo(this.currentNote.val);
+	}
+
+	public moveToPrevNote(): void {
+		if (_.isNil(this._currentNote.prev) || _.isNil(this._currentNote.prev.val)) {
+			const prevSection = this.currentSection.prev;
+			if (_.isNil(prevSection) || _.isNil(prevSection.val)) return;
+			if (!_.isNil(prevSection.val)) {
+				this._currentNote = prevSection.val.notes.last;
+			}
+		} else {
+			this._currentNote = this._currentNote.prev;
+		}
+		this.moveTo(this.currentNote.val);
+	}
+
 	public moveToNextInsertPos(): void {
+		this._currentNote = this.model.sections.last.val.notes.last;
 		const pos = this.coordinate.getNextInsertPos();
 		pos.y += CursorView.CURSOR_Y_OFFSET;
 		this.doMoveTo(pos);

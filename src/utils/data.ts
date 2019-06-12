@@ -80,6 +80,14 @@ export class LinkedList<T> {
 	public get length(): number {
 		return this.toArray().length;
 	}
+
+	public find(fn: (val: T) => boolean): LinkedNode<T> {
+		let result = null;
+		this.forEach((node) => {
+			if (fn(node.val)) result = node;
+		});
+		return result;
+	}
 }
 
 export interface Position {

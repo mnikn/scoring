@@ -1,6 +1,7 @@
 import { LinkedList } from '../utils/data';
 import Section from './section';
 import * as _ from 'lodash';
+import Note from './note';
 
 export default class Score {
 	public id: number;
@@ -13,5 +14,10 @@ export default class Score {
 	public isLastSectionFull(): boolean {
 		const lastSection = this.sections.last;
 		return _.isNil(lastSection) || this.beatPerSections === lastSection.val.notes.length;
+	}
+
+	public get notes(): Note[] {
+		const notes = this.sections.map(section => section.val.notes.toArray());
+		return _.flatten(notes.toArray());
 	}
 }
