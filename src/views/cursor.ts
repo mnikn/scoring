@@ -89,15 +89,19 @@ export default class CursorView extends View<Score> {
 	}
 
 	public moveToNextInsertPos(): void {
-		this._currentNote = this.model.sections.last.val.notes.last;
+		this._currentNote = this.model.lastSection.notes.last.next;
 		const pos = this.coordinate.getNextInsertPos();
 		pos.y += CursorView.CURSOR_Y_OFFSET;
 		this.doMoveTo(pos);
 	}
 
+	public hasSelection(): boolean {
+		return !_.isNil(this._currentNote) && !_.isNil(this._currentNote.val);
+	}
+
 	private doMoveTo(pos: Position) {
 		if (!_.isNil(pos)) {
 			this.sElement.select('path').attr('transform', `matrix(0.93 0 0 0.93 ${pos.x} ${pos.y})`);
-		}		
+		}
 	}
 }

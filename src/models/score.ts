@@ -20,4 +20,8 @@ export default class Score {
 		const notes = this.sections.map(section => section.val.notes.toArray());
 		return _.flatten(notes.toArray());
 	}
+
+	public get lastSection(): Section {
+		return this.sections.last.val;
+	}
 }

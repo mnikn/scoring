@@ -29,6 +29,10 @@ export default class EditorView extends View<Score> {
 		this._cusror.moveToNextInsertPos();
 	}
 
+	public hasSelection(): boolean {
+		return this._cusror.hasSelection();
+	}
+
 	protected doRender(model: Score): Element {
 		const element = d3.create('svg')
 			.attr('id', 'score-content')
