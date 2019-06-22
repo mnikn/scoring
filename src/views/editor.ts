@@ -22,7 +22,7 @@ export default class EditorView extends View<Score> {
 		return this._coordinate;
 	}
 
-	public cursorMoveTo(note: Note): void {
+	public cursorMoveTo(note: LinkedNode<Note>): void {
 		this._cusror.moveTo(note);
 	}
 

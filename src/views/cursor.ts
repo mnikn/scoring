@@ -57,8 +57,11 @@ export default class CursorView extends View<Score> {
 		return element.node();
 	}
 
-	public moveTo(note: Note): void {
-		const pos = this.coordinate.getNotePos(note);
+	public moveTo(note: LinkedNode<Note>): void {
+		this._currentNote = note;
+		if (!note || !note.val) return;
+
+		const pos = this.coordinate.getNotePos(note.val);
 		pos.y += CursorView.CURSOR_Y_OFFSET;
 		this.doMoveTo(pos);
 	}
@@ -69,10 +72,10 @@ export default class CursorView extends View<Score> {
 		if (!this._currentNote.next.val) {
 			const nextSection = this.currentSection.next;
 			nextSection && nextSection.val ? 
-				this.moveTo(nextSection.val.notes.first.val) :
+				this.moveTo(nextSection.val.notes.first) :
 				this.moveToNextInsertPos();
 		} else {
-			this.moveTo(this._currentNote.next.val);
+			this.moveTo(this._currentNote.next);
 		}
 	}
 
@@ -85,7 +88,7 @@ export default class CursorView extends View<Score> {
 		} else {
 			this._currentNote = this._currentNote.prev;
 		}
-		this.moveTo(this.currentNote.val);
+		this.moveTo(this.currentNote);
 	}
 
 	public moveToNextInsertPos(): void {

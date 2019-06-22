@@ -25,7 +25,7 @@ export default class EditorController extends Controller<Score, EditorView> {
 
 			!this.view.hasSelection() ?
 				this.view.cursorMoveToNextInsertPos() :
-				this.view.cursorMoveTo(this.view.currentNote.val);
+				this.view.cursorMoveTo(this.view.currentNote);
 		});
 	}
 
