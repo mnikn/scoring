@@ -38,7 +38,7 @@ export default class CursorView extends View<Score> {
 	}
 
 	public get currentSection(): LinkedNode<Section> {
-		if (_.isNil(this._currentNote) || _.isNil(this._currentNote.val)) return null;
+		if (!this._currentNote || !this._currentNote.val) return null;
 		return this.model.sections.find(section => section.id === this.currentNote.val.sectionId);
 	}
 
@@ -64,9 +64,9 @@ export default class CursorView extends View<Score> {
 	}
 
 	public moveToNextNote(): void {
-		if (_.isNil(this._currentNote.next.val)) {
+		if (!this._currentNote.next.val) {
 			const nextSection = this.currentSection.next;
-			if (!_.isNil(nextSection.val)) {
+			if (nextSection.val) {
 				this._currentNote = nextSection.val.notes.first;
 			} else {
 				this.moveToNextInsertPos();
@@ -78,14 +78,11 @@ export default class CursorView extends View<Score> {
 	}
 
 	public moveToPrevNote(): void {
-		if (_.isNil(this._currentNote.prev) || _.isNil(this._currentNote.prev.val)) {
+		if (!this._currentNote.prev || !this._currentNote.prev.val) {
 			const prevSection = this.currentSection.prev;
-			if (_.isNil(prevSection) || _.isNil(prevSection.val)) return;
+			if (!prevSection || !prevSection.val) return;
 
-			this._currentNote = !_.isNil(prevSection.val) ? prevSection.val.notes.last : this._currentNote;
-			if (!_.isNil(prevSection.val)) {
-				this._currentNote = prevSection.val.notes.last;
-			}
+			this._currentNote = prevSection.val ? prevSection.val.notes.last : this._currentNote;
 		} else {
 			this._currentNote = this._currentNote.prev;
 		}
@@ -100,12 +97,12 @@ export default class CursorView extends View<Score> {
 	}
 
 	public hasSelection(): boolean {
-		return !_.isNil(this._currentNote) && !_.isNil(this._currentNote.val);
+		return !!this._currentNote && !!this._currentNote.val;
 	}
 
-	private doMoveTo(pos: Position) {
-		if (!_.isNil(pos)) {
-			this.sElement.select('path').attr('transform', `matrix(0.93 0 0 0.93 ${pos.x} ${pos.y})`);
-		}
+	private doMoveTo(pos: Position): void {
+		if (!pos) return;
+
+		this.sElement.select('path').attr('transform', `matrix(0.93 0 0 0.93 ${pos.x} ${pos.y})`);
 	}
 }

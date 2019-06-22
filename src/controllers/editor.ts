@@ -17,19 +17,15 @@ export default class EditorController extends Controller<Score, EditorView> {
 				return;
 			}
 
-			if (!this.view.hasSelection()) {
-				this._service.insertNote(key);
-			} else {
+			!this.view.hasSelection() ? 
+				this._service.insertNote(key) : 
 				this._service.replaceNote(this.view.currentNote.val, key);
-			}
 
 			this.view.render(this._service.model);
 
-			if (!this.view.hasSelection()) {
-				this.view.cursorMoveToNextInsertPos();
-			} else {
+			!this.view.hasSelection() ?
+				this.view.cursorMoveToNextInsertPos() :
 				this.view.cursorMoveTo(this.view.currentNote.val);
-			}
 		});
 	}
 

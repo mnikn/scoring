@@ -12,8 +12,7 @@ export default class Score {
 	public sections: LinkedList<Section> = new LinkedList<Section>();
 
 	public isLastSectionFull(): boolean {
-		const lastSection = this.sections.last;
-		return _.isNil(lastSection) || this.beatPerSections === lastSection.val.notes.length;
+		return !this.lastSection || this.beatPerSections === this.lastSectionNotes.length;
 	}
 
 	public get notes(): Note[] {
@@ -22,6 +21,10 @@ export default class Score {
 	}
 
 	public get lastSection(): Section {
-		return this.sections.last.val;
+		return this.sections.last && this.sections.last.val;
+	}
+
+	public get lastSectionNotes(): LinkedList<Note> {
+		return this.lastSection.notes;
 	}
 }

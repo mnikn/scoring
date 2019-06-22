@@ -40,8 +40,8 @@ export default class Coordinate {
 			const sectionY = Math.floor(i / Coordinate.SECTION_PER_LINE) * Coordinate.SECTION_GAP_Y + Coordinate.BASE_Y;
 			pos = { x: sectionX, y: sectionY };
 		} else {
-			const lastSection = score.sections.last.val;
-			const lastSectionElm = $(`#score-section-${lastSection.id}`);
+			const lastSection = score.lastSection;
+			const lastSectionElm = $(`#score-section-${score.lastSection.id}`);
 			const sectionX = Number.parseFloat(lastSectionElm.attr('x'));
 			const sectionY = Number.parseFloat(lastSectionElm.attr('y'));
 
