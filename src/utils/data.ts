@@ -10,6 +10,15 @@ export class LinkedNode<T> {
 		this.next = next;
 		this.prev = prev;
 	}
+
+	public move(step: number): LinkedNode<T> {
+		const forward = step > 0;
+		let current = new LinkedNode(this.val, this.next, this.prev);
+		for(let i = 0;i < Math.abs(step) && current && current.val; ++i) {
+			current = forward ? current.next : current.prev;
+		}
+		return current;
+	}
 }
 
 export class LinkedList<T> {

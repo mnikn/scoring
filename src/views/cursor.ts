@@ -29,6 +29,12 @@ export default class CursorView extends View<Score> {
 				case KEY_RIGHT:
 					this.moveToNextNote();
 					break;
+				case KEY_UP:
+					this.moveUp();
+					break;
+				case KEY_DOWN:
+					this.moveDown();
+					break;
 			}
 		});
 	}
@@ -89,6 +95,20 @@ export default class CursorView extends View<Score> {
 			this._currentNote = this._currentNote.prev;
 		}
 		this.moveTo(this.currentNote);
+	}
+
+	public moveUp(): void {
+		const step = -5;
+		const section = this.currentSection.move(step);
+		const targetNote = section && section.val && section.val.notes.first;
+		targetNote && this.moveTo(targetNote);
+	}
+
+	public moveDown(): void {
+		const step = 5;
+		const section = this.currentSection.move(step);
+		const targetNote = section && section.val && section.val.notes.first;
+		targetNote && this.moveTo(targetNote);
 	}
 
 	public moveToNextInsertPos(): void {
