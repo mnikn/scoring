@@ -64,17 +64,16 @@ export default class CursorView extends View<Score> {
 	}
 
 	public moveToNextNote(): void {
+		// if current select note dose not has next note, it will find next section first. if there is no next section,
+		// it will move to insertPos
 		if (!this._currentNote.next.val) {
 			const nextSection = this.currentSection.next;
-			if (nextSection.val) {
-				this._currentNote = nextSection.val.notes.first;
-			} else {
+			nextSection && nextSection.val ? 
+				this.moveTo(nextSection.val.notes.first.val) :
 				this.moveToNextInsertPos();
-			}
 		} else {
-			this._currentNote = this._currentNote.next;
+			this.moveTo(this._currentNote.next.val);
 		}
-		this.moveTo(this.currentNote.val);
 	}
 
 	public moveToPrevNote(): void {
