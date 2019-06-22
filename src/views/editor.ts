@@ -5,6 +5,7 @@ import Score from 'src/models/score';
 import CursorView from './cursor';
 import Note from 'src/models/note';
 import Coordinate from './services/coordinate';
+import { LinkedNode } from '../utils/data';
 
 export default class EditorView extends View<Score> {
 	private static FONT_COLOR = 'black';
@@ -31,6 +32,10 @@ export default class EditorView extends View<Score> {
 
 	public hasSelection(): boolean {
 		return this._cusror.hasSelection();
+	}
+
+	public get currentNote(): LinkedNode<Note> {
+		return this._cusror.currentNote;
 	}
 
 	protected doRender(model: Score): Element {

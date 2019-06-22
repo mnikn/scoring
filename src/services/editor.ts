@@ -27,4 +27,8 @@ export default class EditorService extends Service<Score> {
 		}
 		return newNote;
 	}
+
+	public replaceNote(currentNote: Note, nextKey: string): void {
+		currentNote.key = nextKey;
+	}
 }

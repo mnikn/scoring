@@ -68,6 +68,8 @@ export default class CursorView extends View<Score> {
 			const nextSection = this.currentSection.next;
 			if (!_.isNil(nextSection.val)) {
 				this._currentNote = nextSection.val.notes.first;
+			} else {
+				this.moveToNextInsertPos();
 			}
 		} else {
 			this._currentNote = this._currentNote.next;
@@ -79,6 +81,8 @@ export default class CursorView extends View<Score> {
 		if (_.isNil(this._currentNote.prev) || _.isNil(this._currentNote.prev.val)) {
 			const prevSection = this.currentSection.prev;
 			if (_.isNil(prevSection) || _.isNil(prevSection.val)) return;
+
+			this._currentNote = !_.isNil(prevSection.val) ? prevSection.val.notes.last : this._currentNote;
 			if (!_.isNil(prevSection.val)) {
 				this._currentNote = prevSection.val.notes.last;
 			}

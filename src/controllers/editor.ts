@@ -19,12 +19,16 @@ export default class EditorController extends Controller<Score, EditorView> {
 
 			if (!this.view.hasSelection()) {
 				this._service.insertNote(key);
+			} else {
+				this._service.replaceNote(this.view.currentNote.val, key);
 			}
 
 			this.view.render(this._service.model);
-			
+
 			if (!this.view.hasSelection()) {
 				this.view.cursorMoveToNextInsertPos();
+			} else {
+				this.view.cursorMoveTo(this.view.currentNote.val);
 			}
 		});
 	}
