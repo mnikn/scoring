@@ -2,10 +2,10 @@ import * as d3 from 'd3';
 
 import View from 'src/platform/view';
 import Score from 'src/models/score';
-import CursorView from './cursor';
 import Note from 'src/models/note';
 import Coordinate from './services/coordinate';
 import { LinkedNode } from '../utils/data';
+import CursorView from './cursor';
 
 export default class EditorView extends View<Score> {
 	private static FONT_COLOR = 'black';
@@ -13,9 +13,8 @@ export default class EditorView extends View<Score> {
 	private _cusror: CursorView;
 	private _coordinate: Coordinate;
 
-	public constructor(nativeElement?: Element, parentView?: View<any>) {
-		super(nativeElement, parentView);
-		this._cusror = new CursorView();
+	public constructor(nativeElement?: Element) {
+		super(nativeElement);
 	}
 
 	public get coordinate(): Coordinate {
@@ -38,13 +37,16 @@ export default class EditorView extends View<Score> {
 		return this._cusror.currentNote;
 	}
 
-	protected doRender(model: Score): Element {
+	protected doInitElement(model?: Score): Element {
+		this._coordinate = new Coordinate(this);
+		this._cusror = new CursorView();
+		this._cusror.initElement(model);
+
 		const element = d3.create('svg')
 			.attr('id', 'score-content')
 			.style('height', '800px')
 			.style('width', '100%')
 			.style('background', 'white');
-
 		element
 			.append('text')
 			.text(`${model.name}`)
@@ -61,7 +63,6 @@ export default class EditorView extends View<Score> {
 			.attr('x', '20px')
 			.attr('y', '100px')
 			.attr('fill', EditorView.FONT_COLOR);
-
 		element
 			.append('text')
 			.text(`${model.beatPerSections}/${model.notePerBeat}`)
@@ -69,10 +70,22 @@ export default class EditorView extends View<Score> {
 			.attr('x', '80px')
 			.attr('y', '100px')
 			.attr('fill', EditorView.FONT_COLOR);
+		
+		return element.node();
+	}
 
-		// render content
-		const sections = model.sections.toArray();
-		if (sections.length === 0) return element.node();
+	protected afterInitElement(): void {
+		this._cusror.parent = this;
+	}
+
+	public renderScore(): void {
+		const sections = this.model.sections.toArray();
+		if (sections.length === 0) return;
+
+		const element = this.sElement;
+		element
+			.selectAll('.score-section')
+			.remove();
 
 		const seciontElement = element
 			.selectAll('.score-section')
@@ -130,15 +143,5 @@ export default class EditorView extends View<Score> {
 			.style('font-size', '16px')
 			.attr('y', '70%')
 			.attr('fill', EditorView.FONT_COLOR);
-
-		return element.node();
 	}
-
-	protected afterRender(model?: Score): void {
-		this._coordinate = new Coordinate(this);
-
-		this._cusror.render(model);
-		this._cusror.parent = this;
-	}
-
 }

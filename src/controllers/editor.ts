@@ -1,8 +1,8 @@
 import Controller from 'src/platform/controller';
-import EditorView from 'src/views/editor';
 import Score from 'src/models/score';
 import EditorService from '../services/editor';
 import View from '../platform/view';
+import EditorView from '../views/editor';
 
 export default class EditorController extends Controller<Score, EditorView> {
 
@@ -17,11 +17,11 @@ export default class EditorController extends Controller<Score, EditorView> {
 				return;
 			}
 
-			!this.view.hasSelection() ? 
-				this._service.insertNote(key) : 
+			!this.view.hasSelection() ?
+				this._service.insertNote(key) :
 				this._service.replaceNote(this.view.currentNote.val, key);
 
-			this.view.render(this._service.model);
+			this.view.renderScore();
 
 			!this.view.hasSelection() ?
 				this.view.cursorMoveToNextInsertPos() :
@@ -30,8 +30,10 @@ export default class EditorController extends Controller<Score, EditorView> {
 	}
 
 	protected initView(parentView: View<any>): EditorView {
-		const view = new EditorView(null, parentView);
-		view.render(this._service.model);
+		const view = new EditorView(null);
+		view.initElement(this._service.model);
+		view.renderScore();
+		view.parent = parentView;
 		return view;
 	}
 

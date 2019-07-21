@@ -7,32 +7,25 @@ export default abstract class View<Model> {
 	private _children: View<Model>[] = [];
 	private _model: Model;
 
-	public constructor(nativeElement?: Element, parentView?: View<any>) {
+	public constructor(nativeElement?: Element) {
 		if (!_.isNil(nativeElement)) {
 			this._element = nativeElement;
 		}
-		this._parent = parentView;
 	}
 
 	public get model(): Model {
 		return this._model;
 	}
 
-	public render(model?: Model): void {
-		if (!_.isNil(this._element)) {
-			this.$element.remove('*');
-		}
-		this._element = this.doRender(model); 
-		this.afterRender(model);
+	public initElement(model?: Model): void {
 		this._model = model;
-		if (!_.isNil(this.parent)) {
-			this.parent.element.appendChild(this.element);
-		}
+		this._element = this.doInitElement(model);
+		this.afterInitElement();
+	}
+	protected abstract doInitElement(model?: Model): Element;
+	protected afterInitElement(): void {
 	}
 
-	protected abstract doRender(model?: Model): Element;
-	protected afterRender(model?: Model): void {
-	}
 
 	public get parent(): View<any> {
 		return this._parent;
@@ -75,7 +68,13 @@ export default abstract class View<Model> {
 }
 
 export class SimpleView extends View<any> {
-	protected doRender(model?: any): Element {
+	protected doInitElement(model?: any): Element {
 		return null;
 	}
+	public doMutableRender(model?: any): Element {
+		return null;
+	}
+	// protected doRender(model?: any): Element {
+	// 	return null;
+	// }
 }

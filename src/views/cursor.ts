@@ -19,8 +19,8 @@ export default class CursorView extends View<Score> {
 	private static CURSOR_Y_OFFSET = 35;
 	private _currentNote: LinkedNode<Note>;
 
-	public constructor(nativeElement?: Element, parentView?: View<any>) {
-		super(nativeElement, parentView);
+	public constructor(nativeElement?: Element) {
+		super(nativeElement);
 		window.addEventListener('keydown', (event) => {
 			switch (event.keyCode) {
 				case KEY_LEFT:
@@ -52,7 +52,7 @@ export default class CursorView extends View<Score> {
 		return (this.parent as EditorView).coordinate;
 	}
 
-	public doRender(): Element {
+	protected doInitElement(): Element {
 		const element = d3.create('svg').attr('class', 'score-editor-cursor');
 		element
 			.append('path')
@@ -61,6 +61,8 @@ export default class CursorView extends View<Score> {
 			.attr('fill', 'red')
 			.style('cursor', 'pointer')
 		return element.node();
+	}
+	protected doMutableRender(): void {
 	}
 
 	public moveTo(note: LinkedNode<Note>): void {

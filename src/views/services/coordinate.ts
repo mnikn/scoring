@@ -1,6 +1,6 @@
-import EditorView from '../editor';
 import { Position } from '../../utils/data';
 import Note from '../../models/note';
+import EditorView from '../editor';
 
 export default class Coordinate {
 	private static SECTION_PER_LINE = 5;
@@ -47,7 +47,7 @@ export default class Coordinate {
 
 			const offsetX = this.sectionWidth * (lastSection.notes.length * 25 + 5) / 100;
 			const insertX = sectionX + offsetX;
-			pos = {x: insertX, y: sectionY};
+			pos = { x: insertX, y: sectionY };
 		}
 		return pos;
 	}
@@ -64,7 +64,7 @@ export default class Coordinate {
 		const noteElement = this._editor.sElement.select(`#score-note-${note.sectionId}-${note.id}`).node() as Element;
 		const noteX = sectionX + seciontWidth * this.rationToFloat(noteElement.getAttribute('x'));
 		const noteY = seciontHeight * this.rationToFloat(noteElement.getAttribute('y')) + sectionY;
-		return {x: noteX, y: noteY};
+		return { x: noteX, y: noteY };
 	}
 
 	private rationToFloat(ration: string): number {
